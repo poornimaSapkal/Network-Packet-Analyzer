@@ -74,26 +74,6 @@ public class packetReader {
         return "|"+charEquivalent+"|";
     }
 
-    /**
-     * This function process the data that will be displayed at the end. It takes in an array of bytes and converts
-     * it to its hexadecimal equivalent and char equivalent simultaneously. It then concatenates the result and sends it
-     * backed to the calling function.
-     *
-     * @param bytesOfData the array of bytes that need to be converted to their hexadecimal equivalent.
-     * @return returns that hexadecimal and char equivalent of the bytes
-     */
-
-    public static String convertToHexForData(byte[] bytesOfData){
-        String hexEquivalent = "";
-        for(int i=0; i< bytesOfData.length-2; i++){
-            hexEquivalent+= convertToHex(bytesOfData[i]);
-            hexEquivalent+= convertToHex(bytesOfData[i+1]);
-            i+=2;
-            hexEquivalent+= " ";
-        }
-        String charEquivalent = convertToChar(bytesOfData);
-        return hexEquivalent+"     "+charEquivalent;
-    }
 
 
     /**
@@ -126,6 +106,15 @@ public class packetReader {
         return macAddress.substring(0,macAddress.length()-1);
     }
 
+    /**
+     * This function takes in an array of bytes. These bytes represent the IP address. It converts the bytes
+     * to their decimal equivalent and appends a period ('.') after every byte that's converted. After it has
+     * converted the bytes to the appropriate IP address format, it returns the string to the calling function.
+     *
+     * @param ipInHex array of bytes that represent the IP address
+     * @return IP address string derived from the input bytes in the correct format.
+     */
+
     public static String processIpAddress(String ipInHex){
         String ipAddress="";
         for(int i=0;i<ipInHex.length();i++){
@@ -137,6 +126,61 @@ public class packetReader {
         return ipAddress.substring(0, ipAddress.length()-1);
     }
 
+
+    /**
+     * This function process the data that will be displayed at the end. It takes in an array of bytes and converts
+     * it to its hexadecimal equivalent and char equivalent simultaneously. It then concatenates the result and sends it
+     * backed to the calling function.
+     *
+     * @param bytesOfData the array of bytes that need to be converted to their hexadecimal equivalent.
+     * @return returns that hexadecimal and char equivalent of the bytes
+     */
+
+    public static String convertToHexForData(byte[] bytesOfData){
+        String hexEquivalent = "";
+        for(int i=0; i< bytesOfData.length-2; i++){
+            hexEquivalent+= convertToHex(bytesOfData[i]);
+            hexEquivalent+= convertToHex(bytesOfData[i+1]);
+            i+=2;
+            hexEquivalent+= " ";
+        }
+        String charEquivalent = convertToChar(bytesOfData);
+        return hexEquivalent+"     "+charEquivalent;
+    }
+
+    /**
+     * This function takes in a protocol as input and based on the protocol number, it decides if it's a TCP, UDP or ICMP
+     * protocol. It then uses this information to print out the first 64 bytes of the data.
+     *
+     * @param protocol the protocol that is specified in the packet
+     */
+
+    public static void processDataBytes(long protocol){
+        String protocolName = "";
+        if(protocol == 1){
+            protocolName = "ICMP";
+        } else if (protocol == 6){
+            protocolName = "TCP";
+        } else if (protocol == 17){
+            protocolName = "UDP";
+        }
+        //change this to check if there are 64 bytes available
+        System.out.println(protocolName + ":  Data: (first 64 bytes)");
+        for(int i=0; i<4; i++){
+            byte[] dataBytes = readBytes(16);
+            String hexEquivalent = convertToHexForData(dataBytes);
+            System.out.println(protocolName+":  "+ hexEquivalent);
+        }
+
+    }
+
+    /**
+     * This function processes the ether header of the packet. It reads the required number of bytes by calling the
+     * readBytes function and specifying how many bytes should be read from the file. It then converts these bytes to
+     * their hexadecimal or decimal equivalent and displays the contents of the packet in the correct format.
+     *
+     * @param packetSize the size of the packet
+     */
     public static void processEther(int packetSize){
 
         byte[] destinationBytes = readBytes(6);
@@ -157,24 +201,15 @@ public class packetReader {
 
     }
 
-    public static void processDataBytes(long protocol){
-        String protocolName = "";
-        if(protocol == 1){
-            protocolName = "ICMP";
-        } else if (protocol == 6){
-            protocolName = "TCP";
-        } else if (protocol == 17){
-            protocolName = "UDP";
-        }
-        //change this to check if there are 64 bytes available
-        System.out.println(protocolName + ":  Data: (first 64 bytes)");
-        for(int i=0; i<4; i++){
-            byte[] dataBytes = readBytes(16);
-            String hexEquivalent = convertToHexForData(dataBytes);
-            System.out.println(protocolName+":  "+ hexEquivalent);
-        }
-
-    }
+    /**
+     * This function processes the IP header from the packet. It calls the readBytes functions to read the bytes
+     * for the various elements in the header and reads the specified number of bytes. It converts the bytes to
+     * either their hexadecimal equivalent or decimal equivalent. It then displays information about all the
+     * components in the header and their associated values.
+     *
+     * @return returns the protocol that is read from the IP header. This is then passed to the main function
+     *         which decides which function to run depending on the value of the protocol.
+     */
 
     public static long processIp(){
 
@@ -306,6 +341,14 @@ public class packetReader {
         return protocol;
     }
 
+    /**
+     * This function takes in the flag bytes as the input and displays the result depending on the values
+     * of the bits in the byte. Every bit represents some information which depends on whether the bit is a 0
+     * or a 1. It then prints out the information accordingly.
+     *
+     * @param flagBytes the array of bytes that contains information about the TCP flag.
+     */
+
     public static void processTcpFlags(byte[] flagBytes){
         byte urgentPointerBit = (byte)(flagBytes[0]>>5 & 1);
         byte acknowledgementBit = (byte)(flagBytes[0]>>4 & 1);
@@ -371,6 +414,15 @@ public class packetReader {
 
     }
 
+    /**
+     * This function processes the TCP header that is present in the packet. It makes use of the readBytes function
+     * and specifies the number of bytes that should be read for a particular component in the header. It then converts
+     * this value to its hexadecimal or decimal equivalent and displays it in the correct format. This function calls
+     * the processTcpFlag function which is responsible for printing out the information related to the flags depending
+     * on the value of the bits.
+     *
+     */
+
     public static void processTcp(){
         byte[] sourcePortBytes = readBytes(2);
         byte[] destinationPortBytes = readBytes(2);
@@ -420,6 +472,13 @@ public class packetReader {
         System.out.println("TCP:");
     }
 
+    /**
+     * This function processes the UDP header from the packet. It reads the required number of bytes for all the
+     * components in the UDP header using the readBytes function and then converts the bytes to their hexadecimal
+     * or decimal equivalent and displays the information in the correct format.
+     *
+     */
+
     public static void processUdp(){
         byte[] sourcePortBytes = readBytes(2);
         byte[] destinationPortBytes = readBytes(2);
@@ -445,6 +504,14 @@ public class packetReader {
         System.out.println("UDP:");
     }
 
+    /**
+     * This function processes the ICMP header from the packet. It reads the required number of bytes for all the
+     * components in the ICMP header using the readBytes function and then converts the bytes to their hexadecimal
+     * or decimal equivalent and displays the information in the correct format.
+     *
+     */
+
+
     public static void processIcmp(){
 
         byte[] typeBytes = readBytes(1);
@@ -466,6 +533,15 @@ public class packetReader {
         System.out.println("ICMP:  Checksum = 0x" +checksum);
         System.out.println("ICMP:");
     }
+
+    /**
+     * The main function processes the packet that is specified when it is run. It calls all the required functions
+     * in order to display information about the headers in the packet. It also checks what protocol it is (TCP, UDP or
+     * ICMP) and depending on that; it will run either the processIcmp, processTcp or processUdp function.
+     *
+     * @param args the file name of the packet
+     * @throws Exception exception if the file if not found
+     */
 
     public static void main(String[] args) throws Exception {
         String fileName = "";
