@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a07d825d-5fd0-41d7-a9b9-0ca25902d550" name="Default Changelist" comment="" />
+    <list default="true" id="a07d825d-5fd0-41d7-a9b9-0ca25902d550" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/packetReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
-              <caret line="457" column="29" lean-forward="true" selection-start-line="457" selection-start-column="29" selection-end-line="457" selection-end-column="29" />
+            <state relative-caret-position="264">
+              <caret line="434" column="38" selection-start-line="434" selection-start-column="38" selection-end-line="434" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1130#1131#0" expanded="true" />
@@ -65,8 +67,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="width" value="714" />
-    <option name="height" value="900" />
+    <option name="x" value="311" />
+    <option name="y" value="23" />
+    <option name="width" value="1440" />
+    <option name="height" value="814" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -80,6 +84,11 @@
               <item name="packetAnalyzer" type="b2602c69:ProjectViewProjectNode" />
               <item name="Network-Packet-Analyzer" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="packetAnalyzer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Network-Packet-Analyzer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -87,6 +96,9 @@
       <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1568402053002" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -150,8 +162,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/packetReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="457" column="29" lean-forward="true" selection-start-line="457" selection-start-column="29" selection-end-line="457" selection-end-column="29" />
+        <state relative-caret-position="264">
+          <caret line="434" column="38" selection-start-line="434" selection-start-column="38" selection-end-line="434" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1130#1131#0" expanded="true" />
