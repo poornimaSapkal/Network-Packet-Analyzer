@@ -54,7 +54,7 @@ public class packetReader {
     /**
      * This function takes in an array of bytes and converts the bytes to their char equivalent.
      * It checks if the ascii value of the byte lies in the range 65-122. If it does, it prints that
-     * character or it prints a period.
+     * character or it prints a period ('.') .
      *
      * @param bytesOfData the byte array which needs to be converted to its char equivalent
      * @return returns the char equivalent of the bytes in the array
@@ -75,9 +75,12 @@ public class packetReader {
     }
 
     /**
-     * This function takes in
-     * @param bytesOfData
-     * @return
+     * This function process the data that will be displayed at the end. It takes in an array of bytes and converts
+     * it to its hexadecimal equivalent and char equivalent simultaneously. It then concatenates the result and sends it
+     * backed to the calling function.
+     *
+     * @param bytesOfData the array of bytes that need to be converted to their hexadecimal equivalent.
+     * @return returns that hexadecimal and char equivalent of the bytes
      */
 
     public static String convertToHexForData(byte[] bytesOfData){
@@ -105,12 +108,20 @@ public class packetReader {
         return decimal_equivalent;
     }
 
+    /**
+     *This function takes in the array of bytes that represent the mac address and it converts those
+     * bytes to its hexadecimal equivalent and appends a colon (':') after every byte to match the standard
+     * convention of what a mac address looks like.
+     *
+     * @param bytesToProcess the bytes of the mac address that need to be processed
+     * @return mac address for the specified bytes in the correct format.
+     */
 
     public static String processMacAddress(byte[] bytesToProcess){
         String macAddress = "";
         for(int i =0; i< bytesToProcess.length; i++){
             String bytesToHex = convertToHex(bytesToProcess[i]);
-            macAddress += bytesToHex + '.';
+            macAddress += bytesToHex + ':';
         }
         return macAddress.substring(0,macAddress.length()-1);
     }
@@ -237,21 +248,8 @@ public class packetReader {
         byte flagByte = (byte)(flagAndFragmentOffsetBytes[0] >> 5 & 7);
         int flag = (int) flagByte;
 
-        byte fragmentByte1 = (byte)(flagAndFragmentOffsetBytes[0] >> 6 & 1);
-        byte fragmentByte2 = (byte)(flagAndFragmentOffsetBytes[0] >> 5 &1);
-        String fragmentMessage1 = "";
-        String fragmentMessage2 = "";
-        if ((int)fragmentByte1 == 1){
-            fragmentMessage1 = "do not fragment";
-        } else {
-            fragmentMessage1 = "last fragment";
-        }
-
-        if ((int)fragmentByte2 == 1){
-            fragmentMessage2 = "do not fragment";
-        } else {
-            fragmentMessage2 = "last fragment";
-        }
+        byte fragmentBit1 = (byte)(flagAndFragmentOffsetBytes[0] >> 6 & 1);
+        byte fragmentBit2 = (byte)(flagAndFragmentOffsetBytes[0] >> 5 &1);
 
         //fragment offset
         byte fiveBitsFromFirstByte = (byte)(flagAndFragmentOffsetBytes[0] & 31);
@@ -272,8 +270,24 @@ public class packetReader {
         System.out.println("IP:  Total length = " + totalLength + " bytes");
         System.out.println("IP:  Identification = " +identification);
         System.out.println("IP:  Flags = 0x"+flag);
-        System.out.println("IP:      ."+(int)fragmentByte1+".. .... = " +fragmentMessage1 );
-        System.out.println("IP:      .."+(int)fragmentByte2+". .... = " +fragmentMessage2 );
+
+        String message = "";
+
+        if ((int)fragmentBit1 == 1){
+            message = "do not fragment";
+        } else {
+            message = "last fragment";
+        }
+        System.out.println("IP:      ."+(int)fragmentBit1+".. .... = " +message );
+
+
+        if ((int)fragmentBit2 == 1){
+            message = "do not fragment";
+        } else {
+            message = "last fragment";
+        }
+
+        System.out.println("IP:      .."+(int)fragmentBit2+". .... = " +message );
 
         System.out.println("IP:  Fragment offset = "+fragmentOffset);
         System.out.println("IP:  Time to live = " +timeToLive+" seconds/hops");
