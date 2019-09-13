@@ -237,7 +237,6 @@ public class packetReader {
         byte version = (byte)(versionAndHeaderLength>>4 &15);
         byte headerLengthByte = (byte)(versionAndHeaderLength & 15);
         int headerLength = headerLengthByte * 4;
-
         byte typeOfServiceByte = (byte)(typeOfServiceBytes[0] >> 5 & 7);
 
         long totalLength = hexToDecimal(totalLengthBytesHex);
@@ -247,7 +246,6 @@ public class packetReader {
         String sourceAddress = processIpAddress(sourceAddressHex);
         String destinationAddress = processIpAddress(destinationAddressHex);
 
-        //type of service code:
 
         byte delayBit = (byte)(typeOfServiceBytes[0]>>4 & 1);
         byte throughputBit = (byte) (typeOfServiceBytes[0]>>3 &1);
@@ -279,7 +277,6 @@ public class packetReader {
             reliabilityMessage = " normal reliability";
         }
 
-        //flag
         byte flagByte = (byte)(flagAndFragmentOffsetBytes[0] >> 5 & 7);
         int flag = (int) flagByte;
 
@@ -548,12 +545,12 @@ public class packetReader {
         for (String s: args){
             fileName = s;
         }
-        File file = new File("/Users/poornimasapkal/Documents/Fall 2019/Foundations of Computer Networks/Project1/"+fileName);
+//        File file = new File("/Users/poornimasapkal/Documents/Fall 2019/Foundations of Computer Networks/Project1/"+fileName);
+        File file = new File(fileName);
         fin = new FileInputStream(file);
         int packetSize = fin.available();
         processEther(packetSize);
         long protocol = processIp();
-        System.out.println(protocol);
 
         if(protocol == 1){
             processIcmp();
