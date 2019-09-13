@@ -425,6 +425,8 @@ public class packetReader {
         byte[] destinationPortBytes = readBytes(2);
         byte[] sequenceNumberBytes = readBytes(4);
         byte[] acknowledgementNumberBytes = readBytes(4);
+
+        //data offset is the first 4 bits from the dataOffsetBytes
         byte[] dataOffsetBytes = readBytes(1);
         byte[] flagBytes = readBytes(1);
         byte[] windowSizeBytes = readBytes(2);
@@ -438,7 +440,7 @@ public class packetReader {
         String windowSizeHex = convertToHex(windowSizeBytes);
         String checksum = convertToHex(checksumBytes);
         String urgentPointerHex = convertToHex(urgentPointer);
-//        String dataOffsetValue = convertToHex(dataOffsetBytes);
+
 
         long sourcePort = hexToDecimal(sourcePortHex);
         long destinationPort = hexToDecimal(destinationPortHex);
@@ -446,7 +448,6 @@ public class packetReader {
         long acknowledgementNumber = hexToDecimal(acknowledgementNumberHex);
         long windowSize = hexToDecimal(windowSizeHex);
         long urgentPointerValue = hexToDecimal(urgentPointerHex);
-//        long dataOffset = hexToDecimal(dataOffsetValue);
 
         System.out.println("TCP:  -----TCP Header -----");
         System.out.println("TCP:");
@@ -455,8 +456,10 @@ public class packetReader {
         System.out.println("TCP:  Destination Port        = " + destinationPort);
         System.out.println("TCP:  Sequence Number         = " + sequenceNumber);
         System.out.println("TCP:  Acknowledgement Number  = " + acknowledgementNumber);
-//        System.out.println("TCP:  Data offset             = " +dataOffset);
 
+        byte dataOffsetBits = (byte)(dataOffsetBytes[0]>>4 & 15);
+        int dataOffset = (int) dataOffsetBits;
+        System.out.println("TCP:  Data offset             = " +dataOffset +" bytes");
 
         String flag = convertToHex(flagBytes);
         System.out.println("TCP:  Flag                    = 0x" +flag);
