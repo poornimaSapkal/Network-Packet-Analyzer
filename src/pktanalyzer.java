@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class packetReader {
+public class pktanalyzer {
 
     static FileInputStream fin;
 
@@ -458,9 +458,9 @@ public class packetReader {
         System.out.println("TCP:  Acknowledgement Number  = " + acknowledgementNumber);
 
         byte dataOffsetBits = (byte)(dataOffsetBytes[0]>>4 & 15);
-        int dataOffset = (int) dataOffsetBits;
+        int dataOffset = (int) dataOffsetBits * 4;
         System.out.println("TCP:  Data offset             = " +dataOffset +" bytes");
-
+        //data offset is tcp's header length
         String flag = convertToHex(flagBytes);
         System.out.println("TCP:  Flag                    = 0x" +flag);
         processTcpFlags(flagBytes);
@@ -469,6 +469,15 @@ public class packetReader {
         System.out.println("TCP:  Checksum  = 0x" +checksum);
         System.out.println("TCP:  Urgent Pointer = "+urgentPointerValue);
         //OPTIONS
+        if(dataOffset == 20){
+            System.out.println("TCP:  No Options");
+        } else {
+            System.out.println("TCP:  Options present");
+        }
+
+        int numberOfOptionsBytesToRead = dataOffset - 20;
+        readBytes(numberOfOptionsBytesToRead);
+
         System.out.println("TCP:");
     }
 
@@ -548,8 +557,8 @@ public class packetReader {
         for (String s: args){
             fileName = s;
         }
-//        File file = new File("/Users/poornimasapkal/Documents/Fall 2019/Foundations of Computer Networks/Project1/"+fileName);
-        File file = new File(fileName);
+        File file = new File("/Users/poornimasapkal/Documents/Fall 2019/Foundations of Computer Networks/Project1/"+fileName);
+//        File file = new File(fileName);
         fin = new FileInputStream(file);
         int packetSize = fin.available();
         processEther(packetSize);
