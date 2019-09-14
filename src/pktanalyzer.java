@@ -12,7 +12,7 @@ public class pktanalyzer {
      * @param numberOfBytesToRead the number of bytes that need to be read from the file.
      * @return returns an array of bytes that were read from the file
      */
-    public static byte[] readBytes(int numberOfBytesToRead) {
+    private static byte[] readBytes(int numberOfBytesToRead) {
         byte[] bytes = new byte[numberOfBytesToRead];
         for (int i = 0; i < numberOfBytesToRead; i++) {
             try {
@@ -25,13 +25,14 @@ public class pktanalyzer {
     }
 
 
+
     /**
      * This function takes in a byte value and converts that value to its hexadecimal equivalent
      *
      * @param byteToConvert the byte that needs to be converted to its hexadecimal equivalent.
      * @return returns a hexadecimal equivalent of the byte passed in as a parameter.
      */
-    public static  String convertToHex(byte byteToConvert){
+    private static  String convertToHex(byte byteToConvert){
         return String.format("%02x", byteToConvert);
     }
 
@@ -45,7 +46,7 @@ public class pktanalyzer {
      * @return returns a string of the hexadecimal equivalent of the bytes in the array.
      */
 
-    public static  String convertToHex(byte[] byteToConvert){
+    private static  String convertToHex(byte[] byteToConvert){
         String hexEquivalent = "";
         for(int i =0; i<byteToConvert.length; i++){
             hexEquivalent += String.format("%02x", byteToConvert[i]);
@@ -63,7 +64,7 @@ public class pktanalyzer {
      * @return returns the char equivalent of the bytes in the array
      */
 
-    public static String convertToChar(byte[] bytesOfData){
+    private static String convertToChar(byte[] bytesOfData){
         String charEquivalent = "";
         for(int i=0; i<bytesOfData.length; i++){
             int asciiEquivalent = (int) bytesOfData[i];
@@ -84,9 +85,8 @@ public class pktanalyzer {
      * @return returns the decimal equivalent of the hexadecimal number.
      */
 
-    public static long hexToDecimal(String hexNumber){
-        long decimal_equivalent = Long.parseLong(hexNumber, 16);
-        return decimal_equivalent;
+    private static long hexToDecimal(String hexNumber){
+        return Long.parseLong(hexNumber, 16);
     }
 
 
@@ -99,7 +99,7 @@ public class pktanalyzer {
      * @return mac address for the specified bytes in the correct format.
      */
 
-    public static String processMacAddress(byte[] bytesToProcess){
+    private static String processMacAddress(byte[] bytesToProcess){
         String macAddress = "";
         for(int i =0; i< bytesToProcess.length; i++){
             String bytesToHex = convertToHex(bytesToProcess[i]);
@@ -118,7 +118,7 @@ public class pktanalyzer {
      * @return IP address string derived from the input bytes in the correct format.
      */
 
-    public static String processIpAddress(String ipInHex){
+    private static String processIpAddress(String ipInHex){
         String ipAddress="";
         for(int i=0;i<ipInHex.length();i++){
             String split_string = ipInHex.substring(i,i+2);
@@ -140,7 +140,7 @@ public class pktanalyzer {
      * @return returns that hexadecimal and char equivalent of the bytes
      */
 
-    public static String convertToHexForData(byte[] bytesOfData){
+    private static String convertToHexForData(byte[] bytesOfData){
         String hexEquivalent = "";
         for(int i=2; i< bytesOfData.length; i++){
             hexEquivalent+= convertToHex(bytesOfData[i-2]);
@@ -162,7 +162,7 @@ public class pktanalyzer {
      * @param protocol the protocol that is specified in the packet
      */
 
-    public static void processDataBytes(long protocol, int packetSize){
+    private static void processDataBytes(long protocol, int packetSize){
         String protocolName = "";
         if(protocol == 1){
             protocolName = "ICMP";
@@ -185,6 +185,7 @@ public class pktanalyzer {
                 String hexEquivalent = convertToHexForData(dataBytes);
                 System.out.println(protocolName+ ":\t"+ hexEquivalent);
             }
+
         }
     }
 
@@ -196,7 +197,7 @@ public class pktanalyzer {
      *
      * @param packetSize the size of the packet
      */
-    public static void processEther(int packetSize){
+    private static void processEther(int packetSize){
 
         byte[] destinationBytes = readBytes(6);
         byte[] sourceBytes = readBytes(6);
@@ -226,7 +227,7 @@ public class pktanalyzer {
      *         which decides which function to run depending on the value of the protocol.
      */
 
-    public static long processIp(){
+    private static long processIp(){
 
         byte[] versionAndHeaderLengthBytes = readBytes(1);
         byte[] typeOfServiceBytes = readBytes(1);
@@ -371,7 +372,7 @@ public class pktanalyzer {
      * @param flagBytes the array of bytes that contains information about the TCP flag.
      */
 
-    public static void processTcpFlags(byte[] flagBytes){
+    private static void processTcpFlags(byte[] flagBytes){
         byte urgentPointerBit = (byte)(flagBytes[0]>>5 & 1);
         byte acknowledgementBit = (byte)(flagBytes[0]>>4 & 1);
         byte pushBit = (byte)(flagBytes[0]>>3 & 1);
@@ -445,7 +446,7 @@ public class pktanalyzer {
      *
      */
 
-    public static void processTcp(){
+    private static void processTcp(){
         byte[] sourcePortBytes = readBytes(2);
         byte[] destinationPortBytes = readBytes(2);
         byte[] sequenceNumberBytes = readBytes(4);
@@ -513,7 +514,7 @@ public class pktanalyzer {
      *
      */
 
-    public static void processUdp(){
+    private static void processUdp(){
         byte[] sourcePortBytes = readBytes(2);
         byte[] destinationPortBytes = readBytes(2);
         byte[] lengthBytes = readBytes(2);
@@ -546,7 +547,7 @@ public class pktanalyzer {
      */
 
 
-    public static void processIcmp(){
+    private static void processIcmp(){
 
         byte[] typeBytes = readBytes(1);
         byte[] codeBytes = readBytes(1);
