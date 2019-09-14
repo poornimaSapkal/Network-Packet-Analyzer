@@ -170,19 +170,19 @@ public class pktanalyzer {
         } else if (protocol == 17){
             protocolName = "UDP";
         }
-        System.out.println(protocolName + ":  Data: (first 64 bytes)");
+        System.out.println(protocolName +":\tData:\t(first 64 bytes)");
         if(packetSize> 128){
             for(int i=0; i<4; i++) {
                 byte[] dataBytes = readBytes(16);
                 String hexEquivalent = convertToHexForData(dataBytes);
-                System.out.println(protocolName + ":  " + hexEquivalent);
+                System.out.println(protocolName + ":\t" + hexEquivalent);
             }
         }
         else {
             for(int i=0; i<2; i++){
                 byte[] dataBytes = readBytes(16);
                 String hexEquivalent = convertToHexForData(dataBytes);
-                System.out.println(protocolName+ ":  "+ hexEquivalent);
+                System.out.println(protocolName+ ":\t"+ hexEquivalent);
             }
         }
     }
@@ -205,12 +205,12 @@ public class pktanalyzer {
         String sourceMacAddress = processMacAddress(sourceBytes);
         String etherType = convertToHex(etherBytes);
 
-        System.out.println("ETHER: ------Ether header------");
+        System.out.println("ETHER:\t------Ether header------");
         System.out.println("ETHER:");
-        System.out.println("ETHER:  Packet Size = " +packetSize + " bytes");
-        System.out.println("ETHER:  Destination = " +destinationMacAddress);
-        System.out.println("ETHER:  Source      = " +sourceMacAddress);
-        System.out.println("ETHER:  Ether type  = " +etherType +" (IP)");
+        System.out.println("ETHER:\tPacket Size = " +packetSize + " bytes");
+        System.out.println("ETHER:\tDestination = " +destinationMacAddress);
+        System.out.println("ETHER:\tSource      = " +sourceMacAddress);
+        System.out.println("ETHER:\tEther type  = " +etherType +" (IP)");
         System.out.println("ETHER: ");
 
     }
@@ -303,19 +303,19 @@ public class pktanalyzer {
         int fragmentOffset = (int)fiveBitsFromFirstByte + (int)otherHalfOfFragmentOffset;
 
 
-        System.out.println("IP:  -----IP Header -----");
+        System.out.println("IP:\t-----IP Header -----");
         System.out.println("IP:");
-        System.out.println("IP:  Version = " + (int)version);
-        System.out.println("IP:  Header length = " +headerLength +" bytes");
-        System.out.println("IP:  Type of service = 0x" +typeOfService);
-        System.out.println("IP:     xxx. .... = " + (int)typeOfServiceByte+ " (precedence)");
-        System.out.println("IP:     ..." +delay+" .... = " +delayMessage);
-        System.out.println("IP:     .... "+throughput+"... = " +throughputMessage);
-        System.out.println("IP:     .... .."+reliability+".. = " +reliabilityMessage);
+        System.out.println("IP:\tVersion = " + (int)version);
+        System.out.println("IP:\tHeader length = " +headerLength +" bytes");
+        System.out.println("IP:\tType of service = 0x" +typeOfService);
+        System.out.println("IP:\t\txxx. .... = " + (int)typeOfServiceByte+ " (precedence)");
+        System.out.println("IP:\t\t..." +delay+" .... = " +delayMessage);
+        System.out.println("IP:\t\t.... "+throughput+"... = " +throughputMessage);
+        System.out.println("IP:\t\t.... ."+reliability+".. = " +reliabilityMessage);
         //type of service stuff
-        System.out.println("IP:  Total length = " + totalLength + " bytes");
-        System.out.println("IP:  Identification = " +identification);
-        System.out.println("IP:  Flags = 0x"+flag);
+        System.out.println("IP:\tTotal length = " + totalLength + " bytes");
+        System.out.println("IP:\tIdentification = " +identification);
+        System.out.println("IP:\tFlags = 0x"+flag);
 
         String message = "";
 
@@ -324,7 +324,7 @@ public class pktanalyzer {
         } else {
             message = "ok to fragment";
         }
-        System.out.println("IP:      ."+(int)fragmentBit1+".. .... = " +message );
+        System.out.println("IP:\t\t."+(int)fragmentBit1+".. .... = " +message );
 
 
         if ((int)fragmentBit2 == 1){
@@ -333,10 +333,10 @@ public class pktanalyzer {
             message = "last fragment";
         }
 
-        System.out.println("IP:      .."+(int)fragmentBit2+". .... = " +message );
+        System.out.println("IP:\t\t.."+(int)fragmentBit2+". .... = " +message );
 
-        System.out.println("IP:  Fragment offset = "+fragmentOffset + " bytes");
-        System.out.println("IP:  Time to live = " +timeToLive+" seconds/hops");
+        System.out.println("IP:\tFragment offset = "+fragmentOffset + " bytes");
+        System.out.println("IP:\tTime to live = " +timeToLive+" seconds/hops");
 
         String protocolName = "";
 
@@ -348,17 +348,16 @@ public class pktanalyzer {
             protocolName = "UDP";
         }
 
-        System.out.println("IP:  Protocol = "+protocol +" (" +protocolName +")");
-        System.out.println("IP:  Header checksum = 0x" +headerChecksum);
-        System.out.println("IP:  Source address = " +sourceAddress);
-        System.out.println("IP:  Destination address = " +destinationAddress);
+        System.out.println("IP:\tProtocol = "+protocol +" (" +protocolName +")");
+        System.out.println("IP:\tHeader checksum = 0x" +headerChecksum);
+        System.out.println("IP:\tSource address = " +sourceAddress);
+        System.out.println("IP:\tDestination address = " +destinationAddress);
         if(headerLength == 20){
-            System.out.println("IP:  No Options");
+            System.out.println("IP:\tNo Options");
         } else {
-            System.out.println("IP:  Options Present");
+            System.out.println("IP:\tOptions Present");
         }
         System.out.println("IP: ");
-        System.out.println("IP:");
 
         return protocol;
     }
@@ -386,7 +385,7 @@ public class pktanalyzer {
             message = "No urgent pointer";
         }
 
-        System.out.println("TCP:       .."+(int)urgentPointerBit+". .... = " +message);
+        System.out.println("TCP:\t\t.."+(int)urgentPointerBit+". .... = " +message);
 
         message="";
         if((int)acknowledgementBit==1){
@@ -395,7 +394,7 @@ public class pktanalyzer {
             message = "No acknowledgement";
         }
 
-        System.out.println("TCP:       ..."+(int)acknowledgementBit+" .... = " +message);
+        System.out.println("TCP:\t\t..."+(int)acknowledgementBit+" .... = " +message);
 
         message="";
         if((int)pushBit==1){
@@ -404,7 +403,7 @@ public class pktanalyzer {
             message = "No push";
         }
 
-        System.out.println("TCP:       .... "+(int)pushBit+"... = " +message);
+        System.out.println("TCP:\t\t.... "+(int)pushBit+"... = " +message);
 
 
         message="";
@@ -414,7 +413,7 @@ public class pktanalyzer {
             message = "No reset";
         }
 
-        System.out.println("TCP:       .... ."+(int)resetBit+"... = " +message);
+        System.out.println("TCP:\t\t.... ."+(int)resetBit+"... = " +message);
 
         message="";
         if((int)synBit==1){
@@ -423,7 +422,7 @@ public class pktanalyzer {
             message = "No syn";
         }
 
-        System.out.println("TCP:       .... .."+(int)synBit+".. = " +message);
+        System.out.println("TCP:\t\t.... .."+(int)synBit+".. = " +message);
 
         message="";
         if((int)finBit==1){
@@ -432,7 +431,7 @@ public class pktanalyzer {
             message = "No fin";
         }
 
-        System.out.println("TCP:       .... ..."+(int)finBit+" = " +message);
+        System.out.println("TCP:\t\t.... ..."+(int)finBit+" = " +message);
 
     }
 
@@ -474,30 +473,30 @@ public class pktanalyzer {
         long windowSize = hexToDecimal(windowSizeHex);
         long urgentPointerValue = hexToDecimal(urgentPointerHex);
 
-        System.out.println("TCP:  -----TCP Header -----");
+        System.out.println("TCP:\t-----TCP Header -----");
         System.out.println("TCP:");
 
-        System.out.println("TCP:  Source Port             = " + sourcePort);
-        System.out.println("TCP:  Destination Port        = " + destinationPort);
-        System.out.println("TCP:  Sequence Number         = " + sequenceNumber);
-        System.out.println("TCP:  Acknowledgement Number  = " + acknowledgementNumber);
+        System.out.println("TCP:\tSource Port             = " + sourcePort);
+        System.out.println("TCP:\tDestination Port        = " + destinationPort);
+        System.out.println("TCP:\tSequence Number         = " + sequenceNumber);
+        System.out.println("TCP:\tAcknowledgement Number  = " + acknowledgementNumber);
 
         byte dataOffsetBits = (byte)(dataOffsetBytes[0]>>4 & 15);
         int dataOffset = (int) dataOffsetBits * 4;
-        System.out.println("TCP:  Data offset             = " +dataOffset +" bytes");
+        System.out.println("TCP:\tData offset             = " +dataOffset +" bytes");
         //data offset is tcp's header length
         String flag = convertToHex(flagBytes);
-        System.out.println("TCP:  Flag                    = 0x" +flag);
+        System.out.println("TCP:\tFlag                    = 0x" +flag);
         processTcpFlags(flagBytes);
 
-        System.out.println("TCP:  Window  = " + windowSize);
-        System.out.println("TCP:  Checksum  = 0x" +checksum);
-        System.out.println("TCP:  Urgent Pointer = "+urgentPointerValue);
+        System.out.println("TCP:\tWindow  = " + windowSize);
+        System.out.println("TCP:\tChecksum  = 0x" +checksum);
+        System.out.println("TCP:\tUrgent Pointer = "+urgentPointerValue);
         //OPTIONS
         if(dataOffset == 20){
-            System.out.println("TCP:  No Options");
+            System.out.println("TCP:\tNo Options");
         } else {
-            System.out.println("TCP:  "+ (dataOffset-20)+" Options present");
+            System.out.println("TCP:\t"+ (dataOffset-20)+" Options present");
         }
 
         int numberOfOptionsBytesToRead = dataOffset - 20;
@@ -528,13 +527,13 @@ public class pktanalyzer {
         long destinationPort = hexToDecimal(destinationPortHex);
         long length = hexToDecimal(lengthHex);
 
-        System.out.println("UDP:  -----UDP Header-----");
+        System.out.println("UDP:\t-----UDP Header-----");
         System.out.println("UDP:");
 
-        System.out.println("UDP:  Source Port             = " + sourcePort);
-        System.out.println("UDP:  Destination Port        = " + destinationPort);
-        System.out.println("UDP:  Length                  = " + length);
-        System.out.println("UDP:  Checksum                = 0x" + checksum);
+        System.out.println("UDP:\tSource Port= " + sourcePort);
+        System.out.println("UDP:\tDestination Port= " + destinationPort);
+        System.out.println("UDP:\tLength= " + length);
+        System.out.println("UDP:\tChecksum= 0x" + checksum);
         System.out.println("UDP:");
     }
 
@@ -559,12 +558,12 @@ public class pktanalyzer {
         long type = hexToDecimal(typeHex);
         long code = hexToDecimal(codeHex);
 
-        System.out.println("ICMP:  -----ICMP Header-----");
+        System.out.println("ICMP:\t-----ICMP Header-----");
         System.out.println("ICMP:");
 
-        System.out.println("ICMP:  Type =   " +type +" (Echo request)");
-        System.out.println("ICMP:  Code = " +code);
-        System.out.println("ICMP:  Checksum = 0x" +checksum);
+        System.out.println("ICMP:\tType =   " +type +" (Echo request)");
+        System.out.println("ICMP:\tCode = " +code);
+        System.out.println("ICMP:\tChecksum = 0x" +checksum);
         System.out.println("ICMP:");
     }
 
