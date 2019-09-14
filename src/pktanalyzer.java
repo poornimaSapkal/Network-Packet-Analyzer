@@ -142,14 +142,15 @@ public class pktanalyzer {
 
     public static String convertToHexForData(byte[] bytesOfData){
         String hexEquivalent = "";
-        for(int i=0; i< bytesOfData.length-2; i++){
-            hexEquivalent+= convertToHex(bytesOfData[i]);
-            hexEquivalent+= convertToHex(bytesOfData[i+1]);
-            i+=2;
+        for(int i=2; i< bytesOfData.length; i++){
+            hexEquivalent+= convertToHex(bytesOfData[i-2]);
+            hexEquivalent+= convertToHex(bytesOfData[i-1]);
+            i+=1;
             hexEquivalent+= " ";
         }
         String charEquivalent = convertToChar(bytesOfData);
         return hexEquivalent+"     "+charEquivalent;
+
     }
 
 
