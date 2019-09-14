@@ -24,6 +24,7 @@ public class pktanalyzer {
         return bytes;
     }
 
+
     /**
      * This function takes in a byte value and converts that value to its hexadecimal equivalent
      *
@@ -33,6 +34,7 @@ public class pktanalyzer {
     public static  String convertToHex(byte byteToConvert){
         return String.format("%02x", byteToConvert);
     }
+
 
     /**
      * This function takes in an array of bytes and converts the bytes to their hexadecimal equivalent.
@@ -50,6 +52,7 @@ public class pktanalyzer {
         }
         return hexEquivalent;
     }
+
 
     /**
      * This function takes in an array of bytes and converts the bytes to their char equivalent.
@@ -75,7 +78,6 @@ public class pktanalyzer {
     }
 
 
-
     /**
      * This function takes in a hexadecimal string as a parameter and converts it to its decimal equivalent.
      *
@@ -87,6 +89,7 @@ public class pktanalyzer {
         long decimal_equivalent = Long.parseLong(hexNumber, 16);
         return decimal_equivalent;
     }
+
 
     /**
      *This function takes in the array of bytes that represent the mac address and it converts those
@@ -105,6 +108,7 @@ public class pktanalyzer {
         }
         return macAddress.substring(0,macAddress.length()-1);
     }
+
 
     /**
      * This function takes in an array of bytes. These bytes represent the IP address. It converts the bytes
@@ -125,6 +129,7 @@ public class pktanalyzer {
         }
         return ipAddress.substring(0, ipAddress.length()-1);
     }
+
 
 
     /**
@@ -148,6 +153,8 @@ public class pktanalyzer {
         return hexEquivalent+"     "+charEquivalent;
     }
 
+
+
     /**
      * This function takes in a protocol as input and based on the protocol number, it decides if it's a TCP, UDP or ICMP
      * protocol. It then uses this information to print out the first 64 bytes of the data.
@@ -155,7 +162,7 @@ public class pktanalyzer {
      * @param protocol the protocol that is specified in the packet
      */
 
-    public static void processDataBytes(long protocol){
+    public static void processDataBytes(long protocol, int packetSize){
         String protocolName = "";
         if(protocol == 1){
             protocolName = "ICMP";
@@ -164,15 +171,23 @@ public class pktanalyzer {
         } else if (protocol == 17){
             protocolName = "UDP";
         }
-        //change this to check if there are 64 bytes available
         System.out.println(protocolName + ":  Data: (first 64 bytes)");
-        for(int i=0; i<4; i++){
-            byte[] dataBytes = readBytes(16);
-            String hexEquivalent = convertToHexForData(dataBytes);
-            System.out.println(protocolName+":  "+ hexEquivalent);
+        if(packetSize> 128){
+            for(int i=0; i<4; i++) {
+                byte[] dataBytes = readBytes(16);
+                String hexEquivalent = convertToHexForData(dataBytes);
+                System.out.println(protocolName + ":  " + hexEquivalent);
+            }
         }
-
+        else {
+            for(int i=0; i<2; i++){
+                byte[] dataBytes = readBytes(16);
+                String hexEquivalent = convertToHexForData(dataBytes);
+                System.out.println(protocolName+ ":  "+ hexEquivalent);
+            }
+        }
     }
+
 
     /**
      * This function processes the ether header of the packet. It reads the required number of bytes by calling the
@@ -193,10 +208,10 @@ public class pktanalyzer {
 
         System.out.println("ETHER: ------Ether header------");
         System.out.println("ETHER:");
-        System.out.println("ETHER:  Packet Size = " +packetSize);
+        System.out.println("ETHER:  Packet Size = " +packetSize + " bytes");
         System.out.println("ETHER:  Destination = " +destinationMacAddress);
         System.out.println("ETHER:  Source      = " +sourceMacAddress);
-        System.out.println("ETHER:  Ether type  = " +etherType);
+        System.out.println("ETHER:  Ether type  = " +etherType +" (IP)");
         System.out.println("ETHER: ");
 
     }
@@ -308,7 +323,7 @@ public class pktanalyzer {
         if ((int)fragmentBit1 == 1){
             message = "do not fragment";
         } else {
-            message = "last fragment";
+            message = "ok to fragment";
         }
         System.out.println("IP:      ."+(int)fragmentBit1+".. .... = " +message );
 
@@ -321,9 +336,20 @@ public class pktanalyzer {
 
         System.out.println("IP:      .."+(int)fragmentBit2+". .... = " +message );
 
-        System.out.println("IP:  Fragment offset = "+fragmentOffset);
+        System.out.println("IP:  Fragment offset = "+fragmentOffset + " bytes");
         System.out.println("IP:  Time to live = " +timeToLive+" seconds/hops");
-        System.out.println("IP:  Protocol = "+protocol);
+
+        String protocolName = "";
+
+        if(protocol == 1){
+            protocolName = "ICMP";
+        } else if (protocol == 6){
+            protocolName = "TCP";
+        } else if (protocol == 17){
+            protocolName = "UDP";
+        }
+
+        System.out.println("IP:  Protocol = "+protocol +" (" +protocolName +")");
         System.out.println("IP:  Header checksum = 0x" +headerChecksum);
         System.out.println("IP:  Source address = " +sourceAddress);
         System.out.println("IP:  Destination address = " +destinationAddress);
@@ -472,7 +498,7 @@ public class pktanalyzer {
         if(dataOffset == 20){
             System.out.println("TCP:  No Options");
         } else {
-            System.out.println("TCP:  Options present");
+            System.out.println("TCP:  "+ (dataOffset-20)+" Options present");
         }
 
         int numberOfOptionsBytesToRead = dataOffset - 20;
@@ -537,7 +563,7 @@ public class pktanalyzer {
         System.out.println("ICMP:  -----ICMP Header-----");
         System.out.println("ICMP:");
 
-        System.out.println("ICMP:  Type =   " +type);
+        System.out.println("ICMP:  Type =   " +type +" (Echo request)");
         System.out.println("ICMP:  Code = " +code);
         System.out.println("ICMP:  Checksum = 0x" +checksum);
         System.out.println("ICMP:");
@@ -557,21 +583,19 @@ public class pktanalyzer {
         for (String s: args){
             fileName = s;
         }
-        File file = new File("/Users/poornimasapkal/Documents/Fall 2019/Foundations of Computer Networks/Project1/"+fileName);
-//        File file = new File(fileName);
+        File file = new File(fileName);
         fin = new FileInputStream(file);
         int packetSize = fin.available();
         processEther(packetSize);
         long protocol = processIp();
-
         if(protocol == 1){
             processIcmp();
         } else if (protocol == 6){
             processTcp();
-            processDataBytes(protocol);
+            processDataBytes(protocol, packetSize);
         } else if (protocol == 17){
             processUdp();
-            processDataBytes(protocol);
+            processDataBytes(protocol, packetSize);
         }
 
     }
