@@ -66,7 +66,6 @@ public class pktanalyzer {
     public static String convertToChar(byte[] bytesOfData){
         String charEquivalent = "";
         for(int i=0; i<bytesOfData.length; i++){
-//            charEquivalent+= (char)(bytesOfData[i]& 0xff);
             int asciiEquivalent = (int) bytesOfData[i];
             if((65<=asciiEquivalent)&&(asciiEquivalent<=122)){
                 charEquivalent+= (char)asciiEquivalent;
