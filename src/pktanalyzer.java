@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class pktanalyzer {
 
@@ -24,6 +25,27 @@ public class pktanalyzer {
         return bytes;
     }
 
+    /**
+     * This function reads all the bytes that are there in the file
+     *
+     * @return all the bytes that were read from the file
+     */
+
+    private static byte[] readAllBytes(){
+        byte[] bytes = new byte[64];
+        try{
+            byte line = (byte)fin.read();
+            int i=0;
+            while ((int)line!=-1){
+                bytes[i] = line;
+                line = (byte)fin.read();
+                i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bytes;
+    }
 
 
     /**
@@ -154,7 +176,6 @@ public class pktanalyzer {
     }
 
 
-
     /**
      * This function takes in a protocol as input and based on the protocol number, it decides if it's a TCP, UDP or ICMP
      * protocol. It then uses this information to print out the first 64 bytes of the data.
@@ -180,10 +201,16 @@ public class pktanalyzer {
             }
         }
         else {
-            for(int i=0; i<2; i++){
-                byte[] dataBytes = readBytes(16);
-                String hexEquivalent = convertToHexForData(dataBytes);
+
+            byte[] dataBytes = readAllBytes();
+            int start = 0;
+            int end = 16;
+            for(int i=0; i<4; i++){
+                byte[] data = Arrays.copyOfRange(dataBytes, start, end);
+                String hexEquivalent = convertToHexForData(data);
                 System.out.println(protocolName+ ":\t"+ hexEquivalent);
+                start = end;
+                end+=16;
             }
 
         }
